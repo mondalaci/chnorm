@@ -1,0 +1,58 @@
+2010-01-03  Laszlo Monda  <laci@monda.hu>
+
+	* Print help when no arguments were given.
+
+	* Update the license to GPLv3.
+
+	* Update the project page URL.
+
+	* Release version 0.4
+
+2009-06-16  Laszlo Monda  <laci@monda.hu>
+
+	* chnorm (set_attributes): Fix help by removing errorneous characters.
+	Make error messages more straightforward.
+	Release version 0.3
+
+2005-10-02  Laszlo Monda  <laci@monda.hu>
+
+	* README: Improve documentation.
+
+	* chnorm (set_attributes): New function.
+	(check_options): Report invalid option arguments and quit in that
+	case.
+	(set_dir_attributes): New function.
+	(parse_arguments): Make executable detection default.
+
+2005-09-15  Laszlo Monda  <laci@monda.hu>
+
+	* chnorm (help): Clarify output.
+
+2005-09-14  Laszlo Monda  <laci@monda.hu>
+
+	* chnorm: Create Python version based on the original C version.
+	(is_executable): Recognize library objects based on the filename
+	and indentify them as non-executables if the filename doesn't
+	contain ".so." or doesn't end with ".so".
+
+2003-03-25  Laszlo Monda  <laci@monda.hu>
+
+	* chnorm.c: Add --exec-detect option.
+
+	* README: Add English documentation.
+
+	* README.HU: Add Hungarian documentation.
+
+	* chnorm.c: Release version 0.1
+
+2003-03-22  Laszlo Monda  <laci@monda.hu>
+
+	* Add --help option.
+
+2003-03-18  Laszlo Monda  <laci@monda.hu>
+
+	* Use getopt_long() instead of getopt().
+
+2003-03-17  Laszlo Monda  <laci@monda.hu>
+
+	* ChangeLog started.
