@@ -16,7 +16,7 @@ Usage
 -----
 
 ```
-$ ./chnorm 
+$ ./chnorm
 Usage: chnorm [OPTION]... [FILE]...
 Change the permissions of directories and files distinctively.
 chnorm 0.4 is released under the GPLv3, hosted at https://github.com/mondalaci/chnorm
