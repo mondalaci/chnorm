@@ -10,7 +10,7 @@ Installation
 
 Just copy the chnorm executable into `/usr/local/bin` , `/usr/bin` , `~/bin` or any path you want but preferably to one that is present in your `$PATH` environment variable.
 
-You may also want to SUID root it if you trust the code enough or aren't really paranoid.
+You may also want to SUID root this utility if you trust the code enough by executing `chmod +s chnorm`.
 
 Usage
 -----
