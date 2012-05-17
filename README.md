@@ -5,6 +5,16 @@ Chnorm is a simple command line utility which makes one able to set the owner, g
 
 It is especially useful if you often copy files with braindead permission from filesystems not supporting the Unix permission scheme. chnorm detects executables based on their contents and sets their permissions accordingly.
 
+Installation
+------------
+
+Just copy the chnorm executable into /usr/local/bin , /usr/bin , ~/bin or any path you want but preferably to one that is present in your $PATH environment variable.
+
+You may also want to SUID root it if you trust the code enough or aren't really paranoid.
+
+Usage
+-----
+
 ```
 $ ./chnorm 
 Usage: chnorm [OPTION]... [FILE]...
