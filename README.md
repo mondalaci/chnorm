@@ -1,7 +1,9 @@
 chnorm
 ======
 
-Chnorm is a simple command line utility which makes one able to set the owner, group and the mode of the given files and directories on a per file / per directory basis, recursively. It is especially useful if you often copy files with braindead permission from filesystems not supporting the Unix permission scheme. chnorm detects executables based on their contents and sets their permissions accordingly.
+Chnorm is a simple command line utility which makes one able to set the owner, group and the mode of the given files and directories on a per file / per directory basis, recursively.
+
+It is especially useful if you often copy files with braindead permission from filesystems not supporting the Unix permission scheme. chnorm detects executables based on their contents and sets their permissions accordingly.
 
 ```
 $ ./chnorm 
