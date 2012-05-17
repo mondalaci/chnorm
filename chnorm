@@ -1,0 +1,174 @@
+#!/usr/bin/env python
+#-*- coding: iso8859-2 -*-
+
+import os
+import sys
+import optparse
+import pwd
+
+version = '0.4'
+
+class Options:
+    pass
+
+options = Options()
+
+def is_executable(filename):
+    magic1 = '#!'
+    magic2 = chr(0x7F) + 'ELF'
+
+    file = open(filename)
+    head = file.read(4)
+
+    is_executable = head.startswith(magic1) or head.startswith(magic2)
+    is_library = filename.endswith('.so') or filename.find('.so.') > 0
+
+    return is_executable and not is_library
+
+def set_attributes(filename):
+    ok = True
+
+    if os.path.isfile(filename):
+        mode = options.file_mode
+        executable = is_executable(filename)
+        if executable:
+            mode |= 0111
+    else:
+        mode = options.dir_mode
+
+    try:
+        os.chmod(filename, mode)
+    except Exception, e:
+        ok = False
+
+    try:
+        os.lchown(filename, options.owner, options.group)
+    except Exception, e:
+        ok = False
+
+    if not ok:
+        print 'Failed setting permissions on "%s"' % filename
+    elif options.verbose:
+        print 'File permissions set on "%s"' % filename
+
+def init_parser():
+    usage = 'usage: %prog [OPTION]... [FILE]...\n'\
+        'Change the permissions of directories and files distinctively.\n'\
+        'chnorm 0.4 is released under the GPLv3, hosted at http://code.google.com/p/chnorm/'
+    version_str = '%prog ' + version
+    parser = optparse.OptionParser(usage, version=version_str)
+    parser.add_option('-f', '--file-mode', dest='file_mode',
+        default='644', metavar='FILEMODE',
+        help='set octal mode FILEMODE for files (default is 644)')
+    parser.add_option('-d', '--dir-mode', dest='dir_mode',
+        default='755', metavar='DIRMODE',
+        help='set octal mode DIRMODE for directories (default is 755)')
+    parser.add_option('-o', '--owner', dest='owner',
+        metavar='OWNER', default=os.getuid(),
+        help='set owner OWNER for every file and directory')
+    parser.add_option('-g', '--group', dest='group',
+        metavar='GROUP', default=os.getgid(),
+        help='set group GROUP for every file and directory')
+    parser.add_option('-e', '--exec-detect', action='store_true',
+        dest='exec_detect', default=True,
+        help='detect executable files based on their content and filename '\
+        'and set them executable accordingly [default]')
+    parser.add_option('-n', '--no-exec-detect', action='store_false',
+        dest='exec_detect', help='do not detect executable files based '\
+        'on their content and filename and do not set them executable '\
+        'accordingly')
+    parser.add_option('-v', '--verbose', action='store_true', dest='verbose',
+        default=False, help='verbose operation')
+    opts, args = parser.parse_args()
+    options.options = opts
+    options.exec_detect = opts.exec_detect
+    options.verbose = opts.verbose
+    options.args = args
+    return parser
+
+def check_options():
+
+    def octstr_to_int(string):
+        if len(string) != 3:
+            return None
+
+        sum = 0
+        base = 1
+
+        for i in range(2, -1, -1):
+            numchr = string[i]
+
+            isnum = ('0' <= numchr <= '7')
+            if not isnum:
+                return None
+
+            num = int(numchr)
+            sum += num * base
+            base *= 8
+
+        return sum
+
+    def str_to_uid(string):
+        try:
+            uid = int(string)
+        except:
+            try:
+                uid = pwd.getpwnam(string).pw_uid
+                return uid
+            except:
+                return None
+
+        try:
+            pwd.getpwuid(uid)
+        except:
+            return None
+
+        return uid
+
+    options.file_mode = octstr_to_int(options.options.file_mode)
+    options.dir_mode = octstr_to_int(options.options.dir_mode)
+    options.owner = str_to_uid(options.options.owner)
+    options.group = str_to_uid(options.options.group)
+
+    ok = True
+    if options.file_mode == None:
+        print 'File mode "%s" is invalid.' % options.options.file_mode
+        ok = False
+
+    if options.dir_mode == None:
+        print 'File mode "%s" is invalid.' % options.options.dir_mode
+        ok = False
+
+    if options.owner == None:
+        print 'Owner "%s" is invalid.' % options.options.owner
+        ok = False
+
+    if options.group == None:
+        print 'Group "%s" is invalid.' % options.options.group
+
+    if not ok:
+        sys.exit(1)
+
+def set_dir_attributes(filename):
+    for root, dirs, files in os.walk(filename):
+        for dirname in dirs:
+            dirname = os.path.join(root, dirname)
+            set_attributes(dirname)
+
+        for filename in files:
+            filename = os.path.join(root, filename)
+            set_attributes(filename)
+
+def main():
+    parser = init_parser()
+    check_options()
+
+    if len(options.args) == 0:
+        parser.print_help()
+        sys.exit(2)
+
+    for filename in options.args:
+        set_dir_attributes(filename)
+
+if __name__ == '__main__':
+    main()
