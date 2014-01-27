@@ -5,6 +5,7 @@ import os
 import sys
 import optparse
 import pwd
+import grp
 
 version = '0.4'
 
@@ -108,27 +109,34 @@ def check_options():
 
         return sum
 
-    def str_to_uid(string):
+    def str_to_id(string, user_or_group):
         try:
-            uid = int(string)
-        except:
+            uid_or_gid = int(string)
+        except:  # If UID or GID is non-numeric then look up the ID based on the name.
             try:
-                uid = pwd.getpwnam(string).pw_uid
-                return uid
+                if user_or_group == 'user':
+                    uid_or_gid = pwd.getpwnam(string).pw_uid
+                elif user_or_group == 'group':
+                    uid_or_gid = grp.getgrnam(string).gr_gid
+                return uid_or_gid
             except:
                 return None
 
+        # Check whether the UID or GID is valid and return None if invalid.
         try:
-            pwd.getpwuid(uid)
+            if user_or_group == 'user':
+                pwd.getpwuid(uid_or_gid)
+            elif user_or_group == 'group':
+                grp.getgrgid(uid_or_gid)
         except:
             return None
 
-        return uid
+        return uid_or_gid
 
     options.file_mode = octstr_to_int(options.options.file_mode)
     options.dir_mode = octstr_to_int(options.options.dir_mode)
-    options.owner = str_to_uid(options.options.owner)
-    options.group = str_to_uid(options.options.group)
+    options.owner = str_to_id(options.options.owner, 'user')
+    options.group = str_to_id(options.options.group, 'group')
 
     ok = True
     if options.file_mode == None:
