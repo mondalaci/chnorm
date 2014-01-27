@@ -55,7 +55,7 @@ def set_attributes(filename):
 def init_parser():
     usage = 'usage: %prog [OPTION]... [FILE]...\n'\
         'Change the permissions of directories and files distinctively.\n'\
-        'chnorm 0.4 is released under the GPLv3, hosted at http://code.google.com/p/chnorm/'
+        'chnorm ' + version + ' is released under the GPLv3, hosted at http://code.google.com/p/chnorm/'
     version_str = '%prog ' + version
     parser = optparse.OptionParser(usage, version=version_str)
     parser.add_option('-f', '--file-mode', dest='file_mode',
